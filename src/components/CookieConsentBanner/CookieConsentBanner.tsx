@@ -22,7 +22,7 @@ const getDataLayer = (): LocalDataLayer => {
 // Se TypeScript si lamenta, puoi importarli direttamente se hai messo export nel file .d.ts,
 // altrimenti confidiamo nel global.
 
-const setGtmDefaultConsent = () => {
+export const setGtmDefaultConsent = () => {
     const dataLayer = getDataLayer();
 
     dataLayer.push({
@@ -36,7 +36,7 @@ const setGtmDefaultConsent = () => {
  * 3. Aggiorna il consenso in GTM a 'granted' per i cookie accettati.
  * Questo sblocca i tag interni al contenitore GTM.
  */
-const updateGtmConsent = () => {
+export const updateGtmConsent = () => {
     const dataLayer = getDataLayer();
     dataLayer.push({
         'consent': 'update',
