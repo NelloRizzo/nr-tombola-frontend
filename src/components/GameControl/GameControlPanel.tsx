@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gameService, { type GameStatus as GameStatusAPI, type Game, type CalledNumber } from '../../services/gameService';
-import cardService, { type PaginatedResult } from '../../services/cardService';
+import cardService, { type PaginatedResult, type WinCheckResponse } from '../../services/cardService';
 import authService from '../../services/authService';
 
 import './GameControl.scss';
@@ -68,7 +68,6 @@ const GameControlPanel: React.FC = () => {
 
         try {
             const result = await cardService.getPaginatedCards(
-                game.id,
                 page,
                 PAGE_SIZE,
                 term
@@ -232,63 +231,63 @@ const GameControlPanel: React.FC = () => {
         loadGameDetails();
     }, [loadGameDetails]);
 
-
     // ----------------------------------------------------------------------
-    // LOGICA MODAL E VINCITE
+    // LOGICA API: VERIFICA VINCITE (Sostituzione del Mock)
     // ----------------------------------------------------------------------
 
-    const handleCheckWin = (card: Card) => {
+    const handleCheckWin = async (card: Card) => {
         if (!game) return;
 
-        // 1. Fase Immediata: Imposta il feedback di caricamento e la cartella da visualizzare
-        setWinCheckMessage({ cardId: card.id, message: 'Verifica in corso...' });
+        // 1. Reset e Messaggio di Attesa
+        setWinCheckMessage({ cardId: card.id, message: 'Verifica vincita in corso...' });
         setSelectedCard(card);
         setWinLevelForDisplay(undefined);
 
-        // 2. Fase Ritardata (Simulazione API)
-        setTimeout(() => {
-            const drawnSet = new Set(game.drawnNumbers);
-            // Logica per trovare i numeri abbinati (su tutte le 3 righe)
-            const matchedNumbers = card.cells.filter(cell => drawnSet.has(cell));
+        try {
+            // 2. Chiamata API al backend per la verifica
+            const result: WinCheckResponse = await cardService.checkCardWin(
+                game.id,
+                card.id
+            );
 
-            let mockLevel = 0;
-            let description = 'Nessuna Vincita';
+            // 3. Elaborazione della Risposta
+            if (result.success) {
 
-            // Verifica delle vincite riga per riga (i 15 numeri sono salvati per riga: 0-4, 5-9, 10-14)
-            for (let i = 0; i < 3; i++) {
-                const row = card.cells.slice(i * 5, (i + 1) * 5);
-                const rowMatches = row.filter(cell => drawnSet.has(cell)).length;
+                // winLevel è il numero di numeri vincenti sulla riga più vincente (es. 5 per Cinquina)
+                const winLevel = result.winLevel ?? 0;
 
-                // Aggiorna il livello di vincita massimo trovato
-                if (rowMatches > mockLevel) {
-                    mockLevel = rowMatches;
-                }
-            }
+                setWinLevelForDisplay(winLevel);
+                setWinCheckMessage({
+                    cardId: card.id,
+                    // Il messaggio viene fornito direttamente dall'API
+                    message: `RISULTATO: ${result.message || 'Verifica completata.'}`
+                });
 
-            if (mockLevel === 15) {
-                description = 'TOMBOLA!';
-            } else if (mockLevel === 5) {
-                description = 'CINQUINA!';
-            } else if (mockLevel >= 2) {
-                description = `${mockLevel} numeri su una riga`;
             } else {
-                description = 'Nessuna Vincita Trovata';
+                // Gestione di errori specifici (es. partita non attiva)
+                setWinLevelForDisplay(0);
+                setWinCheckMessage({
+                    cardId: card.id,
+                    message: `ERRORE: ${result.error || 'Verifica vincita fallita.'}`
+                });
             }
 
-
-            setWinLevelForDisplay(mockLevel);
+        } catch (error) {
+            // Gestione errori di rete
+            console.error('Errore di rete durante la verifica vincita:', error);
+            setWinLevelForDisplay(0);
             setWinCheckMessage({
                 cardId: card.id,
-                message: `RISULTATO: ${description} (${matchedNumbers.length}/15 totali)`
+                message: 'ERRORE: Errore di rete nella verifica vincita.'
             });
-        }, 600); // Ritardo simulato
+        }
     };
-
+    
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
     // ESTRAZIONE DELLE VARIABILI DAL RISULTATO API 
     const { data: paginatedCards, total: totalFilteredCards, pages: totalPages } = paginatedCardsResult;
-    
+
     // ----------------------------------------------------------------------
     // RENDER DEL COMPONENTE
     // ----------------------------------------------------------------------

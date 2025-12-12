@@ -32,21 +32,18 @@ class CardService {
      * Corrisponde al metodo paginate del BaseRepository sul backend.
      */
     async getPaginatedCards(
-        gameId: number,
         page: number,
         limit: number,
         searchTerm: string = ''
     ): Promise<PaginatedResult<Card> | { error: string }> {
         try {
-            const response = await api.get(`${this.baseUrl}/game/${gameId}`, {
+            const response = await api.get(`${this.baseUrl}`, {
                 params: {
                     page,
                     limit,
-                    // Si assume che il backend supporti il filtro tramite il parametro 'search'
                     ...(searchTerm && { search: searchTerm })
                 }
             });
-            // Assumo che la risposta sia già nel formato PaginatedResult
             return response.data;
         } catch (error: any) {
             console.error("Errore nel recupero delle cartelle:", error);
@@ -62,12 +59,19 @@ class CardService {
         cardId: number
     ): Promise<WinCheckResponse> {
         try {
-            // Si assume che ci sia un endpoint dedicato alla verifica della vincita
-            const response = await api.post<WinCheckResponse>(`${this.baseUrl}/check-win`, {
-                gameId,
-                cardId
-            });
-            return response.data;
+            const response = await api.get<WinCheckResponse>(`/games/${gameId}/card/${cardId}`);
+            if (response.status === 200) {
+                return ({
+                    success: response.status === 200,
+                    winLevel: response.data.winLevel,
+                    message: response.data.message
+                })
+            }
+            return {
+                success: false,
+                error: 'Verifica vincita fallita.'
+            };
+
         } catch (error: any) {
             console.error("Errore nella verifica della vincita:", error);
             return {
