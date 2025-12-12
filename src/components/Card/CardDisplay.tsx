@@ -1,7 +1,7 @@
 // src/components/Card/CardDisplay.tsx
 
 import React from 'react';
-import './CardDisplay.scss'; // Importiamo gli stili
+import './CardDisplay.scss'; 
 
 // Tipi di base
 interface Card {
@@ -55,8 +55,8 @@ const CardDisplay: React.FC<CardDisplayProps> = ({ card, drawnNumbers, winLevel 
                     // Il 90 appartiene all'ultima colonna (indice 8)
                     columnIndex = 8;
                 } else {
-                    // La formula Math.floor((N-1) / 10) funziona correttamente 
-                    // per la divisione 1-10, 11-20, ecc. fino a 81-89.
+                    // La formula Math.floor((N-1) / 10) calcola correttamente 
+                    // le colonne 1-10, 11-20, ecc. fino a 81-89.
                     columnIndex = Math.floor((number - 1) / 10);
                 }
             } else {
@@ -73,15 +73,18 @@ const CardDisplay: React.FC<CardDisplayProps> = ({ card, drawnNumbers, winLevel 
 
     const getWinClass = () => {
         if (winLevel === 15) return 'win-tombola';
+        if (winLevel && winLevel < 15 && winLevel > 5) winLevel = 5;
         if (winLevel && winLevel >= 2) return 'win-line'; // Cinquina, Quaterna, Terno, Ambo, etc.
         return '';
     };
+
+    const winnings = ['Nessuna', 'Ambo', 'Terno', 'Quaterna', 'Cinquina'];
 
     return (
         <div className={`card-display-container ${getWinClass()}`}>
             <h4>Visualizzazione: {card.name}</h4>
             {winLevel !== undefined && winLevel > 0 && (
-                <p className="win-status">Vincita massima attuale: **{winLevel === 15 ? 'TOMBOLA' : winLevel === 5 ? 'CINQUINA o superiore' : `Riga da ${winLevel} numeri`}**</p>
+                <p className="win-status">Vincita massima attuale: **{winLevel === 15 ? 'TOMBOLA' : winnings[winLevel]}**</p>
             )}
 
             <div className="card-grid-full">

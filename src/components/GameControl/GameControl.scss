@@ -2,7 +2,7 @@
 @use '../../variables' as v;
 
 // ======================================================
-// 1. STRUTTURA PRINCIPALE E LAYOUT GRID (ControlPanel)
+// STRUTTURA PRINCIPALE E LAYOUT GRID (ControlPanel)
 // ======================================================
 
 .game-control-panel {
@@ -12,12 +12,14 @@
     padding: 20px;
     color: v.$white;
 }
+
 .game-status-controls {
     display: flex;
     flex-direction: row;
     gap: 10px;
     padding-bottom: 10px;
 }
+
 .control-header {
     margin-bottom: 30px;
 
@@ -31,8 +33,7 @@
 // Contenitore della griglia principale (che definisce le due colonne)
 .control-layout {
     display: grid;
-    // CRUCIALE: Layout 2/1 (Tabellone a sinistra 2/3, Controlli a destra 1/3)
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr 1fr; // Layout 2/1 (Tabellone a sinistra 2/3, Controlli a destra 1/3)
     gap: 30px;
     padding-bottom: 20px;
 
@@ -57,7 +58,7 @@
 }
 
 // -----------------------------------------------------
-// 1a. POSIZIONAMENTO DEI BLOCCHI NELLA GRIGLIA
+// POSIZIONAMENTO DEI BLOCCHI NELLA GRIGLIA
 // -----------------------------------------------------
 
 // Blocco Tabellone Piccolo (Colonna 1)
@@ -93,7 +94,7 @@
 }
 
 // -----------------------------------------------------
-// 1b. STILI DENTRO I BLOCCHI DI CONTROLLO
+// STILI DENTRO I BLOCCHI DI CONTROLLO
 // -----------------------------------------------------
 
 .manual-input-group {
@@ -139,7 +140,7 @@
 
 
 // ======================================================
-// 2. STILI PER IL CONTENUTO DEL MODAL (LISTA CARTELLE)
+// STILI PER IL CONTENUTO DEL MODAL (LISTA CARTELLE)
 // ======================================================
 
 .card-modal-content {
@@ -207,9 +208,9 @@
     color: #aaa;
 }
 
-// ======================================================
-// 3. STILI BOTTONI E GENERALE (Riflette i tuoi stili originali)
-// ======================================================
+// ========================
+// STILI BOTTONI E GENERALE
+// ========================
 
 .primary-btn,
 .secondary-btn,
@@ -252,15 +253,13 @@ button:disabled {
 }
 
 .main-draw-btn {
-    // Usato per l'estrazione casuale principale
-    @extend .btn-primary;
+    @extend .btn-primary; // Usato per l'estrazione casuale principale
     width: 100%;
     margin-bottom: 10px;
 }
 
 .open-board-btn {
-    // Usato per il pulsante "Apri Tabellone Pubblico"
-    background-color: #28a745;
+    background-color: #28a745; // Usato per il pulsante "Apri Tabellone Pubblico"
     color: white;
     border: 2px solid #1e7e34;
     padding: 10px 15px;

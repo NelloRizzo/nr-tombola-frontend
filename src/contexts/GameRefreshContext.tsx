@@ -33,9 +33,9 @@ export const GameRefreshProvider: React.FC<GameRefreshProviderProps> = ({ childr
     }, []);
 
     const contextValue = useMemo(() => ({
-        refreshKey, // <--- DEVE ESSERE QUI
+        refreshKey, 
         triggerRefresh,
-    }), [refreshKey, triggerRefresh]); // <--- E DEVE ESSERE INCLUSA QUI!
+    }), [refreshKey, triggerRefresh]); 
 
     return (
         <GameRefreshContext.Provider value={contextValue}>

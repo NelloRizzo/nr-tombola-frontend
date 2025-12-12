@@ -1,6 +1,5 @@
 /* src/components/GameControl/GameControl.scss */
 
-// ... (stili esistenti per il GameControlPanel)
 .modal-overlay {
     // 🎯 ANCORAGGIO: Fissa il modal al viewport, ignorando lo scroll della pagina
     position: fixed;
@@ -9,7 +8,7 @@
     right: 0;
     bottom: 0;
 
-    // BACKUP: Assicuriamo che copra l'intera area se 'fixed' fallisce in qualche contesto
+    // Assicuriamo che copra l'intera area se 'fixed' fallisce in qualche contesto
     width: 100vw;
     height: 100vh;
 
@@ -28,7 +27,7 @@
     opacity: 1;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    // ✅ FIX: Impostiamo i limiti di dimensione
+    // Impostiamo i limiti di dimensione
     width: 90%;
     max-width: 80vw;
     /* Larghezza massima adatta per l'elenco di cartelle */
@@ -40,8 +39,7 @@
     display: flex;
     flex-direction: column;
 
-    overflow: hidden;
-    /* Importante per contenere il body scrollabile */
+    overflow: hidden; // Importante per contenere il body scrollabile 
 }
 
 .modal-header {
@@ -62,7 +60,7 @@
 .modal-body {
     margin: 20px;
     padding: 20px;
-    // ✅ FIX: Questo permette al body di scorrere se il contenuto (la lista delle cartelle)
+    // Questo permette al body di scorrere se il contenuto (la lista delle cartelle)
     // è più alto della max-height del modal-container.
     overflow-y: auto;
 
@@ -88,7 +86,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    // Aggiungiamo un leggero bordo per separare gli elementi
+    // Un leggero bordo per separare gli elementi
     border-top: 1px solid #eee;
 }
 
@@ -101,7 +99,7 @@
     font-size: 0.95rem;
 
     .card-name {
-        // ✅ FIX: Assicuriamo che il nome possa crescere ma non si rompa il layout
+        // Assicuriamo che il nome possa crescere ma non si rompa il layout
         flex-grow: 1;
         margin-right: 15px; // Spazio tra il nome e il pulsante
         color: #000000; // Colore del testo per la leggibilità
@@ -122,7 +120,7 @@
         flex-shrink: 0;
         margin-left: 10px;
         font-weight: bold;
-        color: #000000; // Colore per i messaggi (puoi cambiarlo)
+        color: #000000; // Colore per i messaggi (TODO: verificare se cambiarlo)
     }
 }
 
@@ -137,7 +135,6 @@
         padding: 8px 15px;
         cursor: pointer;
         border-radius: 4px;
-        // Usa stili standard o i tuoi stili custom
     }
 }
 

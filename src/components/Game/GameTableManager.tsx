@@ -41,7 +41,6 @@ const GameTableManager: React.FC = () => {
 
                 // Aggiorniamo l'ultimo numero estratto
                 setLatestNumber(statusResult.game.lastDraw?.number);
-                console.log(statusResult.game.lastDraw.number)
             } else {
                 // Se non riusciamo a recuperare lo stato completo, fallback all'elenco dei numeri
                 const numbersResult = await gameService.getCalledNumbers(id);
@@ -75,7 +74,7 @@ const GameTableManager: React.FC = () => {
     }, [fetchGameData]);
 
     useEffect(() => {
-        const handleStorageChange = (event: StorageEvent) => {
+        const handleStorageChange = (event: StorageEvent) => { // gestisce l'aggiornamento se comunicato tramite localStorage
             const expectedKey = `gameRefreshKey_${gameId}`;
             console.log(expectedKey)
             if (event.key === expectedKey) {

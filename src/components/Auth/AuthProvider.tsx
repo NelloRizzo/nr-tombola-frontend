@@ -1,11 +1,11 @@
 // src/context/AuthProvider.tsx
 import React, { createContext, useState, useEffect, type ReactNode } from 'react';
-import authService from '../../services/authService'; // Adatta path
+import authService from '../../services/authService'; 
 
 interface AuthContextType {
     isAuthenticated: boolean;
     loading: boolean;
-    refreshAuth: () => Promise<void>; // Nuova funzione per refresh
+    refreshAuth: () => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,7 +33,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         checkAuth(); // Check iniziale al mount
     }, []);
 
-    // Nuova funzione esposta nel context
     const refreshAuth = async () => {
         setLoading(true);
         await checkAuth();

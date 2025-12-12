@@ -1,7 +1,7 @@
 // src/components/Auth/PrivateRoute.tsx
 import React, { useContext, type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../Auth/AuthProvider'; // Adatta il path
+import { AuthContext } from '../Auth/AuthProvider'; 
 
 interface PrivateRouteProps {
     children: ReactNode;
@@ -10,7 +10,6 @@ interface PrivateRouteProps {
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const context = useContext(AuthContext);
 
-    // Strict TS: Gestisci caso undefined (se non wrap con Provider)
     if (!context) {
         throw new Error('PrivateRoute must be used within an AuthProvider');
     }

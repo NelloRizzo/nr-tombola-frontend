@@ -11,7 +11,6 @@ $win-color: #ffc107; // Giallo/Oro
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
-    // Visibilità: Assicura che questo contenitore sia visibile
 }
 
 .card-display-error {
@@ -31,7 +30,6 @@ $win-color: #ffc107; // Giallo/Oro
 
 .card-row-full {
     display: grid;
-    // CRUCIALE: Definisce 9 colonne uguali, permettendo alla cartella di espandersi
     grid-template-columns: repeat(9, 1fr);
     gap: 3px;
 }
@@ -45,7 +43,7 @@ $win-color: #ffc107; // Giallo/Oro
     font-size: 0.9rem;
     font-weight: bold;
     border-radius: 4px;
-    box-sizing: border-box; // Include padding e border nella width/height
+    box-sizing: border-box;
     transition: all 0.2s ease-in-out;
 }
 
@@ -58,7 +56,6 @@ $win-color: #ffc107; // Giallo/Oro
 .card-cell-full.is-empty {
     background-color: $empty-color;
     border: 1px dashed #ddd;
-    // Rimuoviamo il testo da qui, è uno spazio vuoto
     color: transparent;
 }
 
@@ -75,7 +72,6 @@ $win-color: #ffc107; // Giallo/Oro
     margin-bottom: 5px;
 }
 
-// Feedback visivo per le vincite
 .win-tombola {
     border: 2px solid $win-color;
     box-shadow: 0 0 15px $win-color;

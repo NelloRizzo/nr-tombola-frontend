@@ -1,5 +1,4 @@
 // Stili per il tabellone 9x10 in formato ridotto
-
 .tombola-board-small {
     display: grid;
     // La griglia standard della Tombola ha 10 colonne (1-10, 11-20, ecc.)
@@ -18,28 +17,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 1 / 1;
-    /* Mantiene le celle quadrate */
-    background-color: #3c546b;
-    /* Colore base della cella non estratta */
+    aspect-ratio: 1 / 1; // Mantiene le celle quadrate 
+    background-color: #3c546b; // Colore base della cella non estratta 
     color: white;
-    font-size: 0.8rem;
-    /* Carattere molto più piccolo */
+    font-size: 0.8rem; // Carattere molto più piccolo 
     font-weight: 600;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s, transform 0.1s;
     user-select: none;
-    line-height: 1;
-    /* Rimuove lo spazio extra */
+    line-height: 1; //  Rimuove lo spazio extra 
 
     &.drawn {
-        background-color: #FFD700;
-        /* Colore estratto: Gold */
-        color: #1a2639;
-        /* Testo scuro per contrasto */
+        background-color: #FFD700; // Colore estratto: Gold 
+        color: #1a2639; // Testo scuro per contrasto 
         font-weight: bold;
-        transform: scale(1.03);
-        /* Piccolo effetto per evidenziare */
+        transform: scale(1.03); // Piccolo effetto per evidenziare 
         box-shadow: 0 0 5px #FFD700;
     }
 
