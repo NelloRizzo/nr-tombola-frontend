@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gameService, { type GameStatus as GameStatusAPI, type Game, type CalledNumber } from '../../services/gameService';
+import cardService, { type PaginatedResult } from '../../services/cardService';
 import authService from '../../services/authService';
 
 import './GameControl.scss';
@@ -26,22 +27,16 @@ interface GameControlState {
     isStarted: boolean; // Mappa game.isActive
 }
 
-// DATI DI MOCK PER IL TEST DELLA UI (Con numeri validi per la griglia 3x9)
-const MOCK_CARDS: Card[] = Array.from({ length: 45 }, (_, i) => ({
-    id: i + 1,
-    name: `Tombolata 2025 [ S. ${Math.floor(i / 5) + 1}] <n. ${i % 5 + 1}>`,
-    cells: [
-        // RIGA 1 (5 numeri)
-        (3 + i * 2) % 90 + 1, (15 + i * 2) % 90 + 1, (24 + i * 2) % 90 + 1, (67 + i * 2) % 90 + 1, (81 + i * 2) % 90 + 1,
-        // RIGA 2 (5 numeri)
-        (7 + i * 2) % 90 + 1, (18 + i * 2) % 90 + 1, (31 + i * 2) % 90 + 1, (52 + i * 2) % 90 + 1, (78 + i * 2) % 90 + 1,
-        // RIGA 3 (5 numeri)
-        (1 + i * 2) % 90 + 1, (43 + i * 2) % 90 + 1, (55 + i * 2) % 90 + 1, (77 + i * 2) % 90 + 1, (89 + i * 2) % 90 + 1
-    ].filter(n => n > 0).slice(0, 15)
-        .map(n => n === 90 ? 90 : n % 90 === 0 ? 90 : n % 90) // Assicura 1-90
-}));
-
 const PAGE_SIZE = 10;
+
+// Tipo per gestire il risultato della paginazione
+const INITIAL_PAGINATED_RESULT: PaginatedResult<Card> = {
+    data: [],
+    total: 0,
+    page: 1,
+    pages: 0,
+    limit: PAGE_SIZE
+};
 
 const GameControlPanel: React.FC = () => {
     const { gameId } = useParams<{ gameId: string }>();
@@ -54,12 +49,62 @@ const GameControlPanel: React.FC = () => {
 
     // --- STATI PER IL MODAL E LA VERIFICA VINCITE ---
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [allCards] = useState<Card[]>(MOCK_CARDS); // Lista fissa delle cartelle
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [winCheckMessage, setWinCheckMessage] = useState<{ cardId: number, message: string } | null>(null);
     const [selectedCard, setSelectedCard] = useState<Card | null>(null);
     const [winLevelForDisplay, setWinLevelForDisplay] = useState<number | undefined>(undefined);
+    const [isCardsLoading, setIsCardsLoading] = useState(false)
+    const [paginatedCardsResult, setPaginatedCardsResult] = useState<PaginatedResult<Card>>(INITIAL_PAGINATED_RESULT);
+
+    // -----------------------------
+    // LOGICA API: GESTIONE CARTELLE
+    // -----------------------------
+
+    const fetchCards = useCallback(async (page: number, term: string) => {
+        if (!game) return;
+        setIsCardsLoading(true);
+        setError('');
+
+        try {
+            const result = await cardService.getPaginatedCards(
+                game.id,
+                page,
+                PAGE_SIZE,
+                term
+            );
+
+            if ('error' in result) {
+                setError(result.error);
+                setPaginatedCardsResult(INITIAL_PAGINATED_RESULT);
+            } else {
+                setPaginatedCardsResult(result);
+            }
+        } catch (err) {
+            setError('Errore di rete nel recupero delle cartelle.');
+            setPaginatedCardsResult(INITIAL_PAGINATED_RESULT);
+        } finally {
+            setIsCardsLoading(false);
+        }
+    }, [game]);
+
+    // Effetto per rifare il fetch quando cambia la pagina o il termine di ricerca
+    useEffect(() => {
+        if (isModalOpen && game) {
+            fetchCards(currentPage, searchTerm);
+        }
+    }, [isModalOpen, currentPage, searchTerm, game, fetchCards]);
+
+    // Funzione per aprire il Modal e iniziare il fetch
+    const handleOpenCardsModal = () => {
+        setIsModalOpen(true);
+        setSearchTerm(''); // Resetta la ricerca
+        setCurrentPage(1); // Va alla prima pagina
+        setSelectedCard(null);
+        setWinLevelForDisplay(undefined);
+        setWinCheckMessage(null);
+        // Il fetch verrà attivato dall'useEffect
+    };
 
     // ----------------------------------------------------------------------
     // LOGICA DI CARICAMENTO E API (GAME SERVICE)
@@ -139,8 +184,6 @@ const GameControlPanel: React.FC = () => {
     };
 
     const triggerRefresh = () => {
-        const key = `gameRefreshKey_${game?.id}`;
-        console.log(game?.id, key)
         localStorage.setItem(`gameRefreshKey_${game?.id}`, Date.now().toString());
     }
 
@@ -241,29 +284,11 @@ const GameControlPanel: React.FC = () => {
         }, 600); // Ritardo simulato
     };
 
-    // LOGICA DI FILTRO E PAGINAZIONE LATO CLIENT
-    const filteredCards = allCards
-        .filter(card =>
-            card.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-    const totalFilteredCards = filteredCards.length;
-
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    const paginatedCards = filteredCards.slice(startIndex, endIndex);
-
-    const totalPages = Math.ceil(totalFilteredCards / PAGE_SIZE);
-
-    const handleOpenCardsModal = () => {
-        setIsModalOpen(true);
-        setSelectedCard(null); // Resetta la visualizzazione della cartella
-        setWinLevelForDisplay(undefined);
-        setWinCheckMessage(null);
-        setCurrentPage(1);
-    };
-
-
+    // ESTRAZIONE DELLE VARIABILI DAL RISULTATO API 
+    const { data: paginatedCards, total: totalFilteredCards, pages: totalPages } = paginatedCardsResult;
+    
     // ----------------------------------------------------------------------
     // RENDER DEL COMPONENTE
     // ----------------------------------------------------------------------
@@ -385,15 +410,18 @@ const GameControlPanel: React.FC = () => {
 
                         {/* LISTA DELLE CARTELLE */}
                         <ul className="cards-list">
-                            {paginatedCards.length === 0 ? (
+                            {isCardsLoading ? (
+                                <p>Caricamento cartelle...</p>
+                            ) : paginatedCards.length === 0 ? (
                                 <p>Nessuna cartella trovata per "{searchTerm}".</p>
                             ) : (
-                                paginatedCards.map(card => (
+                                paginatedCards.map((card: Card) => (
                                     <li key={card.id} className="card-item-row">
                                         <span className="card-name">{card.name}</span>
                                         <button
                                             onClick={() => handleCheckWin(card)}
                                             className="secondary-btn small-btn"
+                                            // Disabilita se la partita non è iniziata O se la verifica è già in corso
                                             disabled={!game.isStarted || (winCheckMessage?.cardId === card.id && winCheckMessage.message.includes('corso'))}
                                         >
                                             Controlla Vincita
