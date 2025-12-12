@@ -10,6 +10,8 @@ export interface Game {
     ownerName?: string;
     isActive: boolean;
     totalNumbersDrawn: number;
+    drawnNumbers: number[];
+    lastDraw?: CalledNumber;
 }
 
 export interface CalledNumber {
@@ -21,8 +23,6 @@ export interface CalledNumber {
 
 export interface GameStatus {
     game: Game;
-    drawnNumbers: number[];
-    lastDraw?: CalledNumber;
 }
 
 class GameService {

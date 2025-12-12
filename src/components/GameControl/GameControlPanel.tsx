@@ -1,15 +1,15 @@
 // src/components/GameControl/GameControlPanel.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// Assumiamo che questi servizi esistano (anche se li mockiamo qui)
-// import gameService from '../../services/gameService'; 
-// import authService from '../../services/authService'; 
+import gameService, { type GameStatus as GameStatusAPI, type Game, type CalledNumber } from '../../services/gameService';
+import authService from '../../services/authService';
 
 import './GameControl.scss';
 import GameTableSmall from '../Game/GameTableSmall'; // Componente Tabellone (necessario per la UI)
 // import { useGameRefresh } from '../Game/GameRefreshContext'; // Context per aggiornamenti (necessario per la UI)
 import Modal from '../Common/Modal'; // Componente Modal (necessario per la UI)
 import CardDisplay from '../Card/CardDisplay'; // Componente Cartella 3x9 (necessario per la UI)
+import GamesList from '../Games/GamesList';
 
 // Tipi di base
 interface Card {
@@ -18,12 +18,12 @@ interface Card {
     cells: number[]; // Array piatto di 15 numeri (R1: 0-4, R2: 5-9, R3: 10-14)
 }
 
-interface GameStatus {
+interface GameControlState {
     id: number;
     name: string;
     drawnNumbers: number[];
     latestNumber: number | null;
-    isStarted: boolean; // Nuovo stato per inizio/fine partita
+    isStarted: boolean; // Mappa game.isActive
 }
 
 // DATI DI MOCK PER IL TEST DELLA UI (Con numeri validi per la griglia 3x9)
@@ -47,8 +47,8 @@ const GameControlPanel: React.FC = () => {
     const { gameId } = useParams<{ gameId: string }>();
     const navigate = useNavigate();
     // Stato del gioco (usiamo GameStatus interface)
-    const [game, setGame] = useState<GameStatus | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [game, setGame] = useState<GameControlState | null>(null);
+    const [loading, setLoading] = useState(false);
     const [manualNumber, setManualNumber] = useState('');
     const [error, setError] = useState('');
 
@@ -61,70 +61,90 @@ const GameControlPanel: React.FC = () => {
     const [selectedCard, setSelectedCard] = useState<Card | null>(null);
     const [winLevelForDisplay, setWinLevelForDisplay] = useState<number | undefined>(undefined);
 
-    // Non usiamo il context per questo ripristino, assumiamo sia commentato:
-    // const { triggerRefresh } = useGameRefresh(); 
-
-
     // ----------------------------------------------------------------------
-    // LOGICA DI GIOCO E API (MOCK)
+    // LOGICA DI CARICAMENTO E API (GAME SERVICE)
     // ----------------------------------------------------------------------
 
     const loadGameDetails = useCallback(async () => {
         setLoading(true);
-        try {
-            // MOCK: Stato del gioco
-            const mockDrawnNumbers = [1, 5, 16, 23, 34, 43, 55, 63, 71, 82, 88];
-            const mockGameStatus: GameStatus = {
-                id: Number(gameId),
-                name: `Partita Tombola ID: ${gameId}`,
-                drawnNumbers: mockDrawnNumbers,
-                latestNumber: mockDrawnNumbers.length > 0 ? mockDrawnNumbers[mockDrawnNumbers.length - 1] : null,
-                isStarted: true, // Mock: Partita iniziata
-            };
-            setGame(mockGameStatus);
+        const id = Number(gameId);
+        if (!gameId || isNaN(id)) {
+            setError('ID Partita non valido.');
+            setLoading(false);
+            return;
+        }
 
-        } catch (err: any) {
+        try {
+            const statusResult = await gameService.getGameStatus(id);
+
+            if (statusResult.success && statusResult.game) {
+                const apiStatus: GameStatusAPI = statusResult;
+
+                // Mappa i dati dell'API nello stato locale
+                setGame({
+                    id: apiStatus.game.id,
+                    name: apiStatus.game.name,
+                    drawnNumbers: apiStatus.game.drawnNumbers,
+                    latestNumber: apiStatus.game.lastDraw?.number || null,
+                    isStarted: apiStatus.game.startedAt !== null,
+                });
+
+                setError('');
+            } else {
+                setError(statusResult.error || 'Impossibile recuperare lo stato del gioco.');
+            }
+        } catch (err) {
             setError('Errore nel caricamento dei dettagli del gioco.');
         } finally {
             setLoading(false);
         }
     }, [gameId]);
 
-    const handleStartStopGame = (start: boolean) => {
+    const handleStartStopGame = async (start: boolean) => {
         if (!game) return;
-        // MOCK: Simulazione chiamata API per iniziare/fermare
-        setGame(prev => prev ? { ...prev, isStarted: start } : null);
-        // if (!start) { 
-        //     setGame(prev => prev ? { ...prev, drawnNumbers: [], latestNumber: null } : null); // Resetta i numeri alla fine
-        // }
+
+        if (start) {
+            await gameService.startGame(game.id);
+            setGame(prev => prev ? { ...prev, isStarted: true } : null);
+        }
+        else {
+            await gameService.endGame(game.id);
+            setGame(prev => prev ? { ...prev, drawnNumbers: [], latestNumber: null, isStarted: false } : null); // Resetta i numeri alla fine
+        }
     };
 
-    const handleDraw = () => {
+    const handleDraw = async () => {
         if (!game || !game.isStarted) {
             setError('La partita non è iniziata. Premi "Inizia Partita".');
             return;
         }
+        setLoading(true);
 
-        // MOCK: Estrazione di un nuovo numero (casualmente)
-        const allNumbers = Array.from({ length: 90 }, (_, i) => i + 1);
-        const availableNumbers = allNumbers.filter(n => !game.drawnNumbers.includes(n));
+        try {
+            const result = await gameService.drawRandomNumber(game.id);
 
-        if (availableNumbers.length === 0) {
-            setError('Tutti i numeri sono stati estratti! Tombola completata.');
-            return;
+            if (result.success) {
+                triggerRefresh();
+                // Ricarica i dettagli per aggiornare il tabellone e l'ultimo numero
+                await loadGameDetails();
+                setError('');
+            } else {
+                setError(result.error || 'Estrazione casuale fallita.');
+            }
+        } catch (err) {
+            setError('Errore di rete durante l\'estrazione.');
+        } finally {
+            setLoading(false);
         }
-
-        const newNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-
-        setGame(prev => prev ? {
-            ...prev,
-            drawnNumbers: [...prev.drawnNumbers, newNumber],
-            latestNumber: newNumber,
-        } : null);
-        setError(''); // Pulisce errori precedenti
     };
 
-    const handleManualDraw = () => {
+    const triggerRefresh = () => {
+        const key = `gameRefreshKey_${game?.id}`;
+        console.log(game?.id, key)
+        localStorage.setItem(`gameRefreshKey_${game?.id}`, Date.now.toString());
+    }
+
+    const handleManualDraw = async () => {
         if (!game || !game.isStarted) {
             setError('La partita non è iniziata. Premi "Inizia Partita".');
             return;
@@ -135,19 +155,25 @@ const GameControlPanel: React.FC = () => {
             setError('Inserisci un numero valido (1-90).');
             return;
         }
-        if (game.drawnNumbers.includes(num)) {
-            setError(`Il numero ${num} è già stato estratto.`);
-            return;
-        }
+        setLoading(true);
 
-        // MOCK: Aggiunta del numero manuale
-        setGame(prev => prev ? {
-            ...prev,
-            drawnNumbers: [...prev.drawnNumbers, num],
-            latestNumber: num,
-        } : null);
-        setManualNumber('');
-        setError('');
+        try {
+            const result = await gameService.drawSpecificNumber(game.id, num);
+
+            if (result.success) {
+                triggerRefresh();
+                setManualNumber('');
+                // Ricarica i dettagli per aggiornare il tabellone
+                await loadGameDetails();
+                setError('');
+            } else {
+                setError(result.error || 'Estrazione manuale fallita.');
+            }
+        } catch (err) {
+            setError('Errore di rete durante l\'estrazione manuale.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleOpenPublicBoard = () => {
@@ -315,7 +341,7 @@ const GameControlPanel: React.FC = () => {
                     <div className="action-block drawn-numbers-list">
                         <h4>Ultimi 5 Estratti</h4>
                         <ul className="number-list">
-                            {game.drawnNumbers?.slice().reverse().slice(0, 5).map((num: number, index: number) => (
+                            {game.drawnNumbers?.slice(0, 5).map((num: number, index: number) => (
                                 <li key={index} className="number-item">{num}</li>
                             ))}
                             {game.drawnNumbers?.length === 0 && <li className="number-item-empty">Nessun numero estratto.</li>}

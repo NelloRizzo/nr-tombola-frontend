@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import gameService, { type CalledNumber } from '../../services/gameService';
-import Table from './Table'; // Importa il tuo componente Tabella presentazionale
-import styles from './Table.module.scss'; // Stili
+import Table from './Table'; 
+import styles from './Table.module.scss'; 
 
 // Intervallo di aggiornamento: 30 secondi
 const REFRESH_INTERVAL_MS = 30000;
@@ -41,7 +41,7 @@ const GameTableManager: React.FC = () => {
 
                 // Aggiorniamo l'ultimo numero estratto
                 setLatestNumber(statusResult.game.lastDraw?.number);
-                console.log(statusResult.game.lastDraw)
+                console.log(statusResult.game.lastDraw.number)
             } else {
                 // Se non riusciamo a recuperare lo stato completo, fallback all'elenco dei numeri
                 const numbersResult = await gameService.getCalledNumbers(id);
@@ -77,6 +77,7 @@ const GameTableManager: React.FC = () => {
     useEffect(() => {
         const handleStorageChange = (event: StorageEvent) => {
             const expectedKey = `gameRefreshKey_${gameId}`;
+            console.log(expectedKey)
             if (event.key === expectedKey) {
                 fetchGameData();
             }
