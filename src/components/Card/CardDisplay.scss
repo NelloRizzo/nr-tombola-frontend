@@ -1,0 +1,82 @@
+/* src/components/Card/CardDisplay.scss */
+
+$cell-size-full: 35px;
+$drawn-color: #38a169; // Verde
+$empty-color: #f0f0f0; // Grigio chiaro per gli spazi vuoti
+$win-color: #ffc107; // Giallo/Oro
+
+.card-display-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    // Visibilità: Assicura che questo contenitore sia visibile
+}
+
+.card-display-error {
+    color: #e53e3e;
+    border: 1px solid #fbb;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff8f8;
+}
+
+.card-grid-full {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 10px;
+}
+
+.card-row-full {
+    display: grid;
+    // CRUCIALE: Definisce 9 colonne uguali, permettendo alla cartella di espandersi
+    grid-template-columns: repeat(9, 1fr);
+    gap: 3px;
+}
+
+.card-cell-full {
+    width: 100%;
+    height: $cell-size-full;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border-radius: 4px;
+    box-sizing: border-box; // Include padding e border nella width/height
+    transition: all 0.2s ease-in-out;
+}
+
+.card-cell-full.is-number {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+}
+
+.card-cell-full.is-empty {
+    background-color: $empty-color;
+    border: 1px dashed #ddd;
+    // Rimuoviamo il testo da qui, è uno spazio vuoto
+    color: transparent;
+}
+
+.card-cell-full.is-drawn {
+    background-color: $drawn-color;
+    color: white;
+    box-shadow: 0 0 3px rgba(56, 161, 105, 0.7);
+    transform: scale(1.05);
+}
+
+.win-status {
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+// Feedback visivo per le vincite
+.win-tombola {
+    border: 2px solid $win-color;
+    box-shadow: 0 0 15px $win-color;
+}

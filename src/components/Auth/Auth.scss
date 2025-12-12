@@ -1,0 +1,123 @@
+// src/components/Auth/Auth.scss
+.auth-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2c3e50 0%, #1a2639 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border: 3px solid #8B4513;
+
+    h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        font-family: 'Georgia', serif;
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s;
+
+        &:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2);
+        }
+
+        &::placeholder {
+            color: #999;
+        }
+    }
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #8B4513, #654321);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #654321, #8B4513);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.error-message {
+    background: #ffe6e6;
+    color: #cc0000;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #cc0000;
+    font-size: 0.95rem;
+}
+
+.auth-footer {
+    margin-top: 25px;
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+
+    .link-btn {
+        background: none;
+        border: none;
+        color: #8B4513;
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0;
+
+        &:hover {
+            color: #654321;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 30px 25px;
+        margin: 20px;
+    }
+}

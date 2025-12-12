@@ -1,0 +1,148 @@
+/* src/components/GameControl/GameControl.scss */
+
+// ... (stili esistenti per il GameControlPanel)
+.modal-overlay {
+    // 🎯 ANCORAGGIO: Fissa il modal al viewport, ignorando lo scroll della pagina
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    // BACKUP: Assicuriamo che copra l'intera area se 'fixed' fallisce in qualche contesto
+    width: 100vw;
+    height: 100vh;
+
+    background-color: transparent;
+
+    // 🎯 CENTRAGGIO: Usa flexbox per centrare il modal-container
+    display: flex;
+    justify-content: center; // Centra orizzontalmente
+    align-items: center; // Centra verticalmente
+
+    z-index: 1000;
+}
+
+.modal-container {
+    background-color: rgb(96, 96, 177);
+    opacity: 1;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    // ✅ FIX: Impostiamo i limiti di dimensione
+    width: 90%;
+    max-width: 80vw;
+    /* Larghezza massima adatta per l'elenco di cartelle */
+
+    // Se il contenuto è troppo lungo, il contenitore non deve superare l'80% dell'altezza del viewport
+    max-height: 80vh;
+
+    // Assicuriamo che il layout interno sia colonnare
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+    /* Importante per contenere il body scrollabile */
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: row;
+    margin: 15px;
+
+    h3 {
+        flex: 1;
+        text-align: center;
+    }
+
+    button {
+        flex: 0;
+    }
+}
+
+.modal-body {
+    margin: 20px;
+    padding: 20px;
+    // ✅ FIX: Questo permette al body di scorrere se il contenuto (la lista delle cartelle)
+    // è più alto della max-height del modal-container.
+    overflow-y: auto;
+
+    // Deve prendere lo spazio rimanente per permettere lo scroll.
+    flex-grow: 1;
+}
+
+.card-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; // Spazio tra i blocchi (input, lista, paginazione)
+
+    .search-input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        width: 100%; // Occupa tutta la larghezza
+    }
+}
+
+.cards-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    // Aggiungiamo un leggero bordo per separare gli elementi
+    border-top: 1px solid #eee;
+}
+
+.card-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; // Allinea il nome a sinistra e il pulsante a destra
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+
+    .card-name {
+        // ✅ FIX: Assicuriamo che il nome possa crescere ma non si rompa il layout
+        flex-grow: 1;
+        margin-right: 15px; // Spazio tra il nome e il pulsante
+        color: #000000; // Colore del testo per la leggibilità
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; // Taglia il testo troppo lungo con i puntini
+        max-width: 50%; // Impedisce che un nome lunghissimo rubi tutto lo spazio
+    }
+
+    .secondary-btn.small-btn {
+        // Stile del pulsante di controllo
+        flex-shrink: 0; // Impedisce al pulsante di rimpicciolirsi
+        padding: 5px 10px;
+        margin-left: auto; // Spinge il pulsante a destra
+    }
+
+    .win-message {
+        flex-shrink: 0;
+        margin-left: 10px;
+        font-weight: bold;
+        color: #000000; // Colore per i messaggi (puoi cambiarlo)
+    }
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+
+    button {
+        padding: 8px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        // Usa stili standard o i tuoi stili custom
+    }
+}
+
+.total-count {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+}

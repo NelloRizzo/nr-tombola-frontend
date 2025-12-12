@@ -1,0 +1,23 @@
+// src/index.scss
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// Assicura che il viewport sia sempre pieno
+@viewport {
+  width: device-width;
+  height: device-height;
+  zoom: 1.0;
+  min-zoom: 1.0;
+  max-zoom: 1.0;
+  user-zoom: fixed;
+}
+
+// Prevenire zoom su mobile
+html {
+  touch-action: manipulation;
+}
