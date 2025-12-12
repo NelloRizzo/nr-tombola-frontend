@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Page Not Found</title>
+    <script type="text/javascript">
+      // Funzione per reindirizzare alla home con il percorso corretto
+      (function() {
+        // La variabile d'ambiente VITE_PUBLIC_URL non è accessibile qui, 
+        // quindi usiamo location.pathname per ricavare la base path
+        var segmentCount = (window.location.pathname.split('/').length - 1) - 1; 
+        
+        // Costruiamo il percorso base (es. /nr-tombola-frontend/)
+        var base = window.location.pathname.split('/').slice(0, segmentCount + 1).join('/') + '/';
+
+        // Costruiamo l'URL completo (base + query params + hash)
+        var path = window.location.pathname.replace(base, '');
+        var newLocation = base + '#' + path + window.location.search;
+        
+        // Sostituiamo la location corrente
+        window.location.replace(newLocation);
+      })();
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
