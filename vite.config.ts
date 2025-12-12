@@ -9,5 +9,6 @@ export default defineConfig(() => {
     build: {
       outDir: 'build', // O 'dist', a seconda di come lo chiami
     },
+    base: './'
   })
 });

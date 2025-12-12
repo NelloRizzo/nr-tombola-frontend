@@ -12,9 +12,11 @@ import { AuthProvider } from './components/Auth/AuthProvider';
 import GameControlPanel from './components/GameControl/GameControlPanel';
 import GameTableManager from './components/Game/GameTableManager';
 
+const BASE_PATH = import.meta.env.VITE_PUBLIC_URL;
+
 function App() {
   return (
-    <Router>
+    <Router basename={BASE_PATH}>
       <AuthProvider>
         <div className="app">
           <Routes>
@@ -61,7 +63,7 @@ function App() {
             } />
 
             {/* Route del gioco SENZA layout (fullscreen) */}
-            <Route path="/game/:gameId" element={
+            <Route path="/game/table/:gameId" element={
               <GameTableManager />
             } />
           </Routes>

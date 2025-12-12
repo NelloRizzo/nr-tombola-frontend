@@ -23,6 +23,7 @@ interface GameControlState {
     drawnNumbers: number[];
     latestNumber: number | null;
     isStarted: boolean; // Mappa game.isActive
+    isEnded: boolean
 }
 
 const PAGE_SIZE = 10;
@@ -128,6 +129,7 @@ const GameControlPanel: React.FC = () => {
                     drawnNumbers: apiStatus.game.drawnNumbers,
                     latestNumber: apiStatus.game.lastDraw?.number || null,
                     isStarted: apiStatus.game.startedAt !== null,
+                    isEnded: apiStatus.game.endedAt !== null
                 });
 
                 setError('');
@@ -145,12 +147,16 @@ const GameControlPanel: React.FC = () => {
         if (!game) return;
 
         if (start) {
-            await gameService.startGame(game.id);
-            setGame(prev => prev ? { ...prev, isStarted: true } : null);
+            const result = await gameService.startGame(game.id);
+            if (result.success) {
+                setGame(prev => prev ? { ...prev, isStarted: true } : null);
+            }
         }
         else {
-            await gameService.endGame(game.id);
-            setGame(prev => prev ? { ...prev, drawnNumbers: [], latestNumber: null, isStarted: false } : null); // Resetta i numeri alla fine
+            const result = await gameService.endGame(game.id);
+            if (result.success) {
+                setGame(prev => prev ? { ...prev, drawnNumbers: [], latestNumber: null, isEnded: true } : null); // Resetta i numeri alla fine
+            }
         }
     };
 
@@ -217,7 +223,7 @@ const GameControlPanel: React.FC = () => {
 
     const handleOpenPublicBoard = () => {
         if (gameId) {
-            const publicUrl = `/game/${gameId}`;
+            const publicUrl = `/game/table/${gameId}`;
             // Aprire in una nuova finestra/tab (comportamento standard)
             window.open(publicUrl, '_blank');
         }
@@ -279,7 +285,7 @@ const GameControlPanel: React.FC = () => {
             });
         }
     };
-    
+
     // ESTRAZIONE DELLE VARIABILI DAL RISULTATO API 
     const { data: paginatedCards, total: totalFilteredCards, pages: totalPages } = paginatedCardsResult;
 
@@ -305,7 +311,7 @@ const GameControlPanel: React.FC = () => {
 
                     {/* Pulsanti Inizio/Fine Partita */}
                     <div className="game-status-controls">
-                        <button
+                        <button disabled={game.isEnded}
                             onClick={() => handleStartStopGame(!game.isStarted)}
                             className={game.isStarted ? 'btn-danger' : 'btn-primary'}
                         >
@@ -331,7 +337,7 @@ const GameControlPanel: React.FC = () => {
                         <button
                             onClick={handleDraw}
                             className="main-draw-btn"
-                            disabled={!game.isStarted}
+                            disabled={!game.isStarted || game.isEnded}
                         >
                             Estrai Numero Casuale
                         </button>
@@ -343,7 +349,7 @@ const GameControlPanel: React.FC = () => {
                                 value={manualNumber}
                                 onChange={(e) => setManualNumber(e.target.value)}
                                 placeholder="Numero manuale (1-90)"
-                                disabled={!game.isStarted}
+                                disabled={!game.isStarted || game.isEnded}
                             />
                             <button
                                 onClick={handleManualDraw}

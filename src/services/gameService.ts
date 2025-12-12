@@ -76,7 +76,9 @@ class GameService {
 
     async endGame(gameId: number): Promise<any> {
         try {
+            console.log(gameId)
             const response = await api.post(`/games/${gameId}/end`);
+            console.log(response)
             return response.data;
         } catch (error: any) {
             return {

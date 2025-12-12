@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
 
         const result = await gameService.createGame(newGameName);
         if (result.success && result.game) {
-            navigate(`/game/${result.game.id}`);
+            navigate(`/game/control/${result.game.id}`);
         } else {
             alert(result.error || 'Failed to create game');
         }
