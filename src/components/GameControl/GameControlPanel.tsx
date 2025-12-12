@@ -141,7 +141,7 @@ const GameControlPanel: React.FC = () => {
     const triggerRefresh = () => {
         const key = `gameRefreshKey_${game?.id}`;
         console.log(game?.id, key)
-        localStorage.setItem(`gameRefreshKey_${game?.id}`, Date.now.toString());
+        localStorage.setItem(`gameRefreshKey_${game?.id}`, Date.now().toString());
     }
 
     const handleManualDraw = async () => {
