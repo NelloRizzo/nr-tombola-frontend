@@ -57,7 +57,7 @@ const GamesList: React.FC = () => {
     };
 
     const joinGame = (gameId: number) => {
-        navigate(`/game/${gameId}`);
+        navigate(`/game/table/${gameId}`);
     };
 
     const formatTime = (dateString: string) => {

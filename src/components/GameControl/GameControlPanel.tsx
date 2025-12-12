@@ -6,7 +6,6 @@ import cardService, { type PaginatedResult, type WinCheckResponse } from '../../
 
 import './GameControl.scss';
 import GameTableSmall from '../Game/GameTableSmall'; // Componente Tabellone (necessario per la UI)
-// import { useGameRefresh } from '../Game/GameRefreshContext'; // Context per aggiornamenti (necessario per la UI)
 import Modal from '../Common/Modal'; // Componente Modal (necessario per la UI)
 import CardDisplay from '../Card/CardDisplay'; // Componente Cartella 3x9 (necessario per la UI)
 
@@ -51,7 +50,6 @@ const GameControlPanel: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [winCheckMessage, setWinCheckMessage] = useState<{ cardId: number, message: string } | null>(null);
     const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-    const [winLevelForDisplay, setWinLevelForDisplay] = useState<number | undefined>(undefined);
     const [isCardsLoading, setIsCardsLoading] = useState(false)
     const [paginatedCardsResult, setPaginatedCardsResult] = useState<PaginatedResult<Card>>(INITIAL_PAGINATED_RESULT);
 
@@ -98,7 +96,6 @@ const GameControlPanel: React.FC = () => {
         setSearchTerm(''); // Resetta la ricerca
         setCurrentPage(1); // Va alla prima pagina
         setSelectedCard(null);
-        setWinLevelForDisplay(undefined);
         setWinCheckMessage(null);
         // Il fetch verrà attivato dall'useEffect
     };
@@ -221,14 +218,6 @@ const GameControlPanel: React.FC = () => {
         }
     };
 
-    const handleOpenPublicBoard = () => {
-        if (gameId) {
-            const publicUrl = `/game/table/${gameId}`;
-            // Aprire in una nuova finestra/tab (comportamento standard)
-            window.open(publicUrl, '_blank');
-        }
-    };
-
     // Esecuzione al caricamento
     useEffect(() => {
         loadGameDetails();
@@ -244,7 +233,6 @@ const GameControlPanel: React.FC = () => {
         // 1. Reset e Messaggio di Attesa
         setWinCheckMessage({ cardId: card.id, message: 'Verifica vincita in corso...' });
         setSelectedCard(card);
-        setWinLevelForDisplay(undefined);
 
         try {
             // 2. Chiamata API al backend per la verifica
@@ -255,11 +243,6 @@ const GameControlPanel: React.FC = () => {
 
             // 3. Elaborazione della Risposta
             if (result.success) {
-
-                // winLevel è il numero di numeri vincenti sulla riga più vincente (es. 5 per Cinquina)
-                const winLevel = result.winLevel ?? 0;
-
-                setWinLevelForDisplay(winLevel);
                 setWinCheckMessage({
                     cardId: card.id,
                     // Il messaggio viene fornito direttamente dall'API
@@ -268,7 +251,6 @@ const GameControlPanel: React.FC = () => {
 
             } else {
                 // Gestione di errori specifici (es. partita non attiva)
-                setWinLevelForDisplay(0);
                 setWinCheckMessage({
                     cardId: card.id,
                     message: `ERRORE: ${result.error || 'Verifica vincita fallita.'}`
@@ -278,7 +260,6 @@ const GameControlPanel: React.FC = () => {
         } catch (error) {
             // Gestione errori di rete
             console.error('Errore di rete durante la verifica vincita:', error);
-            setWinLevelForDisplay(0);
             setWinCheckMessage({
                 cardId: card.id,
                 message: 'ERRORE: Errore di rete nella verifica vincita.'
@@ -316,13 +297,6 @@ const GameControlPanel: React.FC = () => {
                             className={game.isStarted ? 'btn-danger' : 'btn-primary'}
                         >
                             {game.isStarted ? 'Ferma Partita' : 'Inizia Partita'}
-                        </button>
-                        <button
-                            onClick={handleOpenPublicBoard}
-                            className="btn-secondary"
-                            disabled={!game.isStarted}
-                        >
-                            Apri Tabellone Pubblico
                         </button>
                     </div>
                     <GameTableSmall drawnNumbers={game.drawnNumbers} latestNumber={game.latestNumber} />
@@ -391,7 +365,6 @@ const GameControlPanel: React.FC = () => {
                     onClose={() => {
                         setIsModalOpen(false);
                         setSelectedCard(null);
-                        setWinLevelForDisplay(undefined);
                     }}
                 >
                     <div className="card-modal-content">
@@ -459,7 +432,7 @@ const GameControlPanel: React.FC = () => {
                             <CardDisplay
                                 card={selectedCard}
                                 drawnNumbers={game.drawnNumbers}
-                                winLevel={winLevelForDisplay}
+                                winCheckMessage={winCheckMessage?.message}
                             />
                         )}
 

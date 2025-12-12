@@ -1,10 +1,10 @@
 // src/components/Table/GameTableManager.tsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import gameService, { type CalledNumber } from '../../services/gameService';
-import Table from './Table'; 
-import styles from './Table.module.scss'; 
+import Table from './Table';
+import styles from './Table.module.scss';
 
 // Intervallo di aggiornamento: 30 secondi
 const REFRESH_INTERVAL_MS = 30000;
@@ -21,7 +21,8 @@ const GameTableManager: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [gameName, setGameName] = useState("Caricamento...");
-
+    const navigate = useNavigate();
+    
     // Funzione di fetching che recupera i numeri estratti
     const fetchGameData = useCallback(async () => {
         if (isNaN(id)) return;
@@ -89,11 +90,15 @@ const GameTableManager: React.FC = () => {
     if (loading) return <div className={styles.tableContainer}><p>Caricamento tabellone e numeri...</p></div>;
     if (error) return <div className={styles.tableContainer}><p className="error-message">Errore: {error}</p></div>;
 
+    const handleBack = () => {
+        navigate(-1);
+    };
     return (
         <Table
             drawnNumbers={drawnNumbers}
             latestNumber={latestNumber}
             gameName={gameName}
+            onBackClick={handleBack}
         />
     );
 };

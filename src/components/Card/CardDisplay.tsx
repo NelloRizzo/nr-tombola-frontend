@@ -13,14 +13,14 @@ interface Card {
 interface CardDisplayProps {
     card: Card;
     drawnNumbers: number[]; // Tutti i numeri estratti finora
-    winLevel?: number; // Livello di vincita (es. 2=Ambo, 5=Cinquina, 15=Tombola)
+    winCheckMessage?: string; // Messaggio di vincita
 }
 
 /**
  * Componente che visualizza la cartella della Tombola nel formato 3 righe x 9 colonne,
  * evidenziando i numeri estratti.
  */
-const CardDisplay: React.FC<CardDisplayProps> = ({ card, drawnNumbers, winLevel }) => {
+const CardDisplay: React.FC<CardDisplayProps> = ({ card, drawnNumbers, winCheckMessage }) => {
 
     // Controllo di sicurezza: se i dati non sono validi, non renderizziamo la griglia
     if (!card || !card.cells || card.cells.length !== 15) {
@@ -71,20 +71,11 @@ const CardDisplay: React.FC<CardDisplayProps> = ({ card, drawnNumbers, winLevel 
 
     const isDrawn = (number: number) => drawnSet.has(number);
 
-    const getWinClass = () => {
-        if (winLevel === 15) return 'win-tombola';
-        if (winLevel && winLevel < 15 && winLevel > 5) winLevel = 5;
-        if (winLevel && winLevel >= 2) return 'win-line'; // Cinquina, Quaterna, Terno, Ambo, etc.
-        return '';
-    };
-
-    const winnings = ['Nessuna', 'Ambo', 'Terno', 'Quaterna', 'Cinquina'];
-
     return (
-        <div className={`card-display-container ${getWinClass()}`}>
+        <div className={`card-display-container`}>
             <h4>Visualizzazione: {card.name}</h4>
-            {winLevel !== undefined && winLevel > 0 && (
-                <p className="win-status">Vincita massima attuale: **{winLevel === 15 ? 'TOMBOLA' : winnings[winLevel]}**</p>
+            {winCheckMessage !== undefined  && (
+                <p className="win-status">**{winCheckMessage}**</p>
             )}
 
             <div className="card-grid-full">

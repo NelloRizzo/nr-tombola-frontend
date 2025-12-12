@@ -191,3 +191,37 @@
     padding: 15px 15px 25px 15px;
   }
 }
+
+/* 🟢 STILI PER IL PULSANTE BACK */
+.backButton {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 10px 15px;
+  border-radius: 50%;
+  /* Rende il pulsante circolare */
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  /* Sopra tableContainer */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    background: rgba(255, 215, 0, 0.15);
+    color: #FFF;
+    border-color: #FFD700;
+  }
+
+  // Media query per adattare la posizione su schermi piccoli
+  @media (max-width: 768px) {
+    top: 15px;
+    left: 15px;
+    padding: 8px 12px;
+    font-size: 1.2rem;
+  }
+}
