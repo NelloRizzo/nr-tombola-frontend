@@ -301,6 +301,11 @@
     .navbar-logo {
         .logo-icon {
             font-size: 1.8rem;
+
+            img {
+                width: 32px;
+                height: 32px;
+            }
         }
 
         .logo-text {

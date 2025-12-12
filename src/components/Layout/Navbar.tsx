@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 import './Navbar.scss';
-import { useGameRefresh } from '../../contexts/GameRefreshContext';
+import logo from '/favicon.png';
 
 const Navbar: React.FC = () => {
     const location = useLocation();
@@ -11,8 +11,6 @@ const Navbar: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const isLoggedIn = authService.isAuthenticated();
     const user = authService.getCurrentUser();
-
-    const {refreshKey} = useGameRefresh();
 
     // Non mostrare navbar nella pagina del tabellone
     if (location.pathname.match(/^\/game\/\d+$/)) {
@@ -29,9 +27,8 @@ const Navbar: React.FC = () => {
             <div className="navbar-container">
                 {/* Logo */}
                 <div className="navbar-logo" onClick={() => navigate('/')}>
-                    <span className="logo-icon">🎲</span>
-                    <span className="logo-text">Tombola</span>
-                    <span>{refreshKey}</span>
+                    <span className="logo-icon"><img src={logo} width='32' alt='🎲' /></span>
+                    <span className="logo-text">NR Tombola</span>
                 </div>
 
                 {/* Desktop Menu */}

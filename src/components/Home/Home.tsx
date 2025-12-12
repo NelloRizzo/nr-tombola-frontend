@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 import './Home.scss';
+import logo from '/favicon.png';
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -13,25 +14,24 @@ const Home: React.FC = () => {
             <main className="home-content">
                 <section className="hero-section">
                     <div className="hero-content">
-                        <h1>🎲 Tombola Online by NR</h1>
-                        <p className="subtitle">Play the classic Italian game online with friends</p>
+                        <h1><img src={logo} alt='[NR] Tombola' /> NR Tombola</h1>
+                        <p className="subtitle">Gioca la tombola on-line insieme con i tuoi amici.</p>
                         <p className="description">
-                            Experience the thrill of Tombola in real-time! Join games, call numbers,
-                            and compete with players from around the world.
+                            Vivi l'emozione di Tombola in tempo reale! Partecipa al gioco, chiama i numeri e gareggia con giocatori da tutto il mondo.
                         </p>
 
                         <div className="hero-buttons">
                             {isLoggedIn ? (
                                 <button onClick={() => navigate('/dashboard')} className="btn-primary">
-                                    Go to Your Dashboard
+                                    Vai al tuo Dashboard
                                 </button>
                             ) : (
                                 <>
                                     <button onClick={() => navigate('/register')} className="btn-primary">
-                                        Get Started Free
+                                        Inizia a Giocare Gratis
                                     </button>
                                     <button onClick={() => navigate('/login')} className="btn-secondary">
-                                        I Have an Account
+                                        Ho già un Account
                                     </button>
                                 </>
                             )}
@@ -56,36 +56,36 @@ const Home: React.FC = () => {
                 </section>
 
                 <section className="how-it-works">
-                    <h2>How to Play</h2>
+                    <h2>Come Giocare</h2>
                     <div className="steps">
                         <div className="step">
                             <div className="step-number">1</div>
-                            <h3>Create or Join a Game</h3>
-                            <p>Start a new game as a caller or join an existing one as a player</p>
+                            <h3>Crea Partita o Partecipa</h3>
+                            <p>Inizia una partita ed estrai i numeri, oppure partecipa ad una partita gestita da un tuo amico.</p>
                         </div>
 
                         <div className="step">
                             <div className="step-number">2</div>
-                            <h3>Get Your Card</h3>
-                            <p>Each player gets a random Tombola card with 15 numbers</p>
+                            <h3>Controlla le Cartelle</h3>
+                            <p>Ogni giocatore potrà possedere più cartelle con 15 numeri casuali.</p>
                         </div>
 
                         <div className="step">
                             <div className="step-number">3</div>
-                            <h3>Listen for Numbers</h3>
-                            <p>The caller draws numbers from 1 to 90 in random order</p>
+                            <h3>Ascolta le Estrazioni</h3>
+                            <p>I numeri saranno estratti casualmente.</p>
                         </div>
 
                         <div className="step">
                             <div className="step-number">4</div>
-                            <h3>Mark Your Card</h3>
-                            <p>Mark off numbers as they're called on your digital card</p>
+                            <h3>Segna i Numeri Estratti</h3>
+                            <p>Segna i numeri estratti sulle tue cartelle digitali.</p>
                         </div>
 
                         <div className="step">
                             <div className="step-number">5</div>
-                            <h3>Win Prizes!</h3>
-                            <p>Complete rows or full cards to win Ambo, Terno, Quaterna, Cinquina, or Tombola!</p>
+                            <h3>Vinci!</h3>
+                            <p>Gioca per realizzare Ambo, Terno, Quaterna, Cinquina, o Tombola!</p>
                         </div>
                     </div>
                 </section>
