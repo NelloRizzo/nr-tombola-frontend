@@ -36,10 +36,10 @@ const Navbar: React.FC = () => {
                     <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
                         Home
                     </Link>
+                    <Link to="/privacy-policy" className={location.pathname === '/privacy-policy' ? 'active' : ''}>Privacy</Link>
                     <Link to="/games" className={location.pathname === '/games' ? 'active' : ''}>
                         Games
                     </Link>
-
                     {isLoggedIn ? (
                         <>
                             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>
