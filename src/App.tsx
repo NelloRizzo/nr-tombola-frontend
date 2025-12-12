@@ -11,7 +11,6 @@ import './App.scss';
 import { AuthProvider } from './components/Auth/AuthProvider';
 import GameControlPanel from './components/GameControl/GameControlPanel';
 import GameTableManager from './components/Game/GameTableManager';
-import { GameRefreshProvider } from './contexts/GameRefreshContext';
 
 function App() {
   return (

@@ -1,16 +1,14 @@
 // src/components/GameControl/GameControlPanel.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import gameService, { type GameStatus as GameStatusAPI, type Game, type CalledNumber } from '../../services/gameService';
+import { useParams } from 'react-router-dom';
+import gameService, { type GameStatus as GameStatusAPI } from '../../services/gameService';
 import cardService, { type PaginatedResult, type WinCheckResponse } from '../../services/cardService';
-import authService from '../../services/authService';
 
 import './GameControl.scss';
 import GameTableSmall from '../Game/GameTableSmall'; // Componente Tabellone (necessario per la UI)
 // import { useGameRefresh } from '../Game/GameRefreshContext'; // Context per aggiornamenti (necessario per la UI)
 import Modal from '../Common/Modal'; // Componente Modal (necessario per la UI)
 import CardDisplay from '../Card/CardDisplay'; // Componente Cartella 3x9 (necessario per la UI)
-import GamesList from '../Games/GamesList';
 
 // Tipi di base
 interface Card {
@@ -40,7 +38,6 @@ const INITIAL_PAGINATED_RESULT: PaginatedResult<Card> = {
 
 const GameControlPanel: React.FC = () => {
     const { gameId } = useParams<{ gameId: string }>();
-    const navigate = useNavigate();
     // Stato del gioco (usiamo GameStatus interface)
     const [game, setGame] = useState<GameControlState | null>(null);
     const [loading, setLoading] = useState(false);
@@ -283,8 +280,6 @@ const GameControlPanel: React.FC = () => {
         }
     };
     
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
     // ESTRAZIONE DELLE VARIABILI DAL RISULTATO API 
     const { data: paginatedCards, total: totalFilteredCards, pages: totalPages } = paginatedCardsResult;
 
