@@ -2,7 +2,7 @@ import React from 'react';
 // La libreria react-cookie-consent espone una funzione per resettare il consenso.
 import { getCookieConsentValue, Cookies } from 'react-cookie-consent'; 
 
-const COOKIE_NAME = "nr-Tombola-Consent";
+const CONSENT_COOKIE_NAME = import.meta.env.VITE_CONSENT_COOKIE_NAME || 'nr-Tombola-Consent';
 
 const RevokeConsentButton: React.FC = () => {
     
@@ -22,11 +22,11 @@ const RevokeConsentButton: React.FC = () => {
     
     // Gestione del click
     const handleRevoke = () => {
-        const consentValue = getCookieConsentValue(COOKIE_NAME);
+        const consentValue = getCookieConsentValue(CONSENT_COOKIE_NAME);
         
         if (consentValue === 'true') {
             // 1. Rimuove il cookie del consenso
-            Cookies.remove(COOKIE_NAME, { path: "/" }); 
+            Cookies.remove(CONSENT_COOKIE_NAME, { path: "/" }); 
             
             // 2. Invia il segnale di rifiuto a GTM
             denyGtmConsent();

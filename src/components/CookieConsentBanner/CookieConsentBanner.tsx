@@ -3,6 +3,7 @@ import CookieConsent from 'react-cookie-consent';
 import { loadGtmScript } from '../../utils/gtmScriptLoader';
 
 const GTM_ID = import.meta.env.VITE_GTM_ID || 'GTM-NO_ID';
+const CONSENT_COOKIE_NAME = import.meta.env.VITE_CONSENT_COOKIE_NAME || 'nr-Tombola-Consent';
 
 type LocalDataLayer = {
     push: (data: any) => void;
@@ -56,7 +57,7 @@ const CookieConsentBanner: React.FC = () => {
             location="bottom"
             buttonText="Accetto"
             declineButtonText="Rifiuto"
-            cookieName="nrTombolaConsent"
+            cookieName={CONSENT_COOKIE_NAME}
             style={{ background: "#2B3742", padding: '10px 0' }}
             buttonStyle={{ color: "white", fontSize: "14px", background: "#FFD700", padding: '10px 20px', borderRadius: '5px' }}
             declineButtonStyle={{ color: "#FFD700", background: "transparent", border: '1px solid #FFD700', padding: '10px 20px', borderRadius: '5px' }}
@@ -69,14 +70,14 @@ const CookieConsentBanner: React.FC = () => {
 
             // Funzione di consenso
             onAccept={() => {
-                loadGtmScript(GTM_ID); 
+                loadGtmScript(GTM_ID);
                 updateGtmConsent();
             }}
 
             // Funzione di rifiuto
             onDecline={() => {
                 console.log("Cookie: Consenso Rifiutato. GA Bloccato.");
-                setGtmDefaultConsent();
+                //setGtmDefaultConsent();
             }}
         >
             Questo sito utilizza cookie di Google Analytics per l'analisi statistica. Cliccando su "Accetto" acconsenti al loro utilizzo.{" "}
