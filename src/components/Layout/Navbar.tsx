@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
                     {isLoggedIn ? (
                         <>
                             <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</Link>
-                            <Link to="/cards/upload" className={location.pathname === '/dashboard' ? 'active' : ''}>Cartelle</Link>
+                            <Link to="/cards/upload" className={location.pathname === '/cards/upload' ? 'active' : ''}>Cartelle</Link>
                             <div className="user-menu">
                                 <div className="user-info">
                                     <span className="user-name">{user?.name}</span>
