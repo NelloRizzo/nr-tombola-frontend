@@ -33,36 +33,25 @@ const Navbar: React.FC = () => {
 
                 {/* Desktop Menu */}
                 <div className="navbar-menu">
-                    <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-                        Home
-                    </Link>
+                    <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
                     <Link to="/privacy-policy" className={location.pathname === '/privacy-policy' ? 'active' : ''}>Privacy</Link>
-                    <Link to="/games" className={location.pathname === '/games' ? 'active' : ''}>
-                        Games
-                    </Link>
+                    <Link to="/games" className={location.pathname === '/games' ? 'active' : ''}>Games</Link>
                     {isLoggedIn ? (
                         <>
-                            <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>
-                                Dashboard
-                            </Link>
+                            <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</Link>
+                            <Link to="/cards/upload" className={location.pathname === '/dashboard' ? 'active' : ''}>Cartelle</Link>
                             <div className="user-menu">
                                 <div className="user-info">
                                     <span className="user-name">{user?.name}</span>
                                     <span className="user-email">{user?.email}</span>
                                 </div>
-                                <button onClick={handleLogout} className="logout-btn">
-                                    Logout
-                                </button>
+                                <button onClick={handleLogout} className="logout-btn">Logout</button>
                             </div>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className={location.pathname === '/login' ? 'active' : ''}>
-                                Login
-                            </Link>
-                            <Link to="/register" className="register-btn">
-                                Register
-                            </Link>
+                            <Link to="/login" className={location.pathname === '/login' ? 'active' : ''}>Login</Link>
+                            <Link to="/register" className="register-btn">Register</Link>
                         </>
                     )}
                 </div>

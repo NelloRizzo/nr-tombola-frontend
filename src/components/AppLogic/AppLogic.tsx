@@ -12,6 +12,7 @@ import GamesList from '../Games/GamesList';
 import Home from '../Home/Home';
 import PageLayout from '../Layout/PageLayout';
 import PrivacyPolicyPage from '../PrivacyPolicyPage/PrivacyPolicyPage';
+import CardUploadControl from '../CardUpload/CardUploadControl';
 
 const AppLogic = () => {
     useTracking();
@@ -56,6 +57,13 @@ const AppLogic = () => {
                 <PrivateRoute>
                     <PageLayout>
                         <GameControlPanel />
+                    </PageLayout>
+                </PrivateRoute>
+            } />
+            <Route path="/cards/upload" element={
+                <PrivateRoute>
+                    <PageLayout>
+                        <CardUploadControl />
                     </PageLayout>
                 </PrivateRoute>
             } />

@@ -17,7 +17,7 @@ const Home: React.FC = () => {
                         <h1><img src={logo} alt='[NR] Tombola' /> NR Tombola</h1>
                         <p className="subtitle">Gioca la tombola on-line insieme con i tuoi amici.</p>
                         <p className="description">
-                            Vivi l'emozione di Tombola in tempo reale! Partecipa al gioco, chiama i numeri e gareggia con giocatori da tutto il mondo.
+                            Vivi l'emozione della Tombola in tempo reale! Partecipa al gioco, chiama i numeri e gareggia con giocatori da tutto il mondo.
                         </p>
 
                         <div className="hero-buttons">
@@ -167,8 +167,6 @@ const Home: React.FC = () => {
                         <div className="footer-column">
                             <h4>Game</h4>
                             <a href="/how-to-play">How to Play</a>
-                            <a href="/rules">Game Rules</a>
-                            <a href="/prizes">Prizes</a>
                         </div>
 
                         <div className="footer-column">
